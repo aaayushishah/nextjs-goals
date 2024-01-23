@@ -9,6 +9,7 @@ type ErrorResponse = {
     message: string
 }
 const SignUpPage = () => {
+  const router = useRouter()
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -21,6 +22,8 @@ const SignUpPage = () => {
         setLoading(true)
        const response = await axios.post('/api/users/signup',user)
        console.log(response)
+       toast.success("User Created Successfully")
+       router.push('/login')
     } catch (error: unknown) {
         const { message } = error as ErrorResponse
         toast.error(message)

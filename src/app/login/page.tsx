@@ -1,8 +1,14 @@
 "use client"
+import axios from 'axios';
 import Link from 'next/link';
-import { useState } from 'react'
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react'
+import toast from 'react-hot-toast';
+type ErrorResponse = {
+    message: string
+}
 const LoginPage = () => {
-
+    // const router = useRouter()
     const [user, setUser] = useState({
         email: "",
         password: "",
@@ -11,7 +17,31 @@ const LoginPage = () => {
     const [loading, setLoading] = useState(false);
 
     const handleLogin = async () => {
+        try {
+            setLoading(true)
+            const response = await axios.post('/api/users/login', user)
+            console.log("response: ", response.data)
+            toast.success("Login success")
+        } catch (error: unknown) {
+           const { message } = error as ErrorResponse
+        toast.error(message)
+        console.log(message)
+    }finally{
+        setLoading(false)
     }
+    }
+    useEffect(() => {
+      if(user.email.length>0 && user.password.length > 0){
+        setButtonDisabled(false)
+      }else{
+        setButtonDisabled(true)
+      }
+    
+      return () => {
+        
+      }
+    }, [user])
+    
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
         <h1>{loading ? "Processing" : "Login"}</h1>
